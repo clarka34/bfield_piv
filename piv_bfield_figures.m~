@@ -152,91 +152,91 @@ parfor n = 1:numel(fnames_inst)
     saveas(hFig, [dir_figures filesep 'vorticity_z__' sprintf('%5.5d',n)], 'png')
     
     
-%     %% SLICE velocity U mag
-%     hFig = init_figure([]);
-%             
-%     centerline_x = floor( size(x,1)/2 );
-%     centerline_y = floor( size(x,2)/2 );   
-%     
-%     plot(1:size(x,1), Umag(centerline_y,:), '-r');
-%     hold on
-%     plot(1:size(y,2), Umag(:,centerline_x), '--b');
-%     
-%     hLeg = legend('slice crossflow','slice streamwise');
-%     set(hLeg, 'color','none');
-%         
-%     grid on
-%     title('velocity magnitude')
-%     xlabel('distance along slice')
-%     ylabel('speed (pixels / second)')
-%     ylim([0 6000]);
-%         
-%     saveas(hFig, [dir_figures filesep 'slice_velocity_mag__' sprintf('%5.5d',n)], 'png')
-%     
-%     %% SLICE velocity U
-%     hFig = init_figure([]);
-%             
-%     centerline_x   = floor( size(x,1)/2 );
-%     centerline_y   = floor( size(x,2)/2 );
-% 
-%     plot(1:size(x,1), fu(centerline_y,:), '-r');
-%     hold on
-%     plot(1:size(y,2), fu(:,centerline_x), '--b');
-%     
-%     hLeg = legend('slice crossflow','slice streamwise');
-%     set(hLeg, 'color','none');
-%     
-%     grid on
-%     title('crossflow velocity')
-%     xlabel('distance along slice')
-%     ylabel('speed (pixels / second)')
-%     ylim([-6000 6000]);
-%     
-%     saveas(hFig, [dir_figures filesep 'slice_velocity_u__' sprintf('%5.5d',n)], 'png')
-% 
-%     
-%     %% SLICE velocity V
-%     hFig = init_figure([]);
-%             
-%     centerline_x   = floor( size(x,1)/2 );
-%     centerline_y   = floor( size(x,2)/2 );
-%         
-%     plot(1:size(x,1), fv(centerline_y,:), '-r');
-%     hold on;
-%     plot(1:size(y,2), fv(:,centerline_x), '--b');
-%     
-%     hLeg = legend('slice crossflow','slice streamwise');
-%     set(hLeg, 'color','none');
-%     
-%     grid on
-%     title('streamwise velocity')
-%     xlabel('distance along slice')
-%     ylabel('speed (pixels / second)')
-%     ylim([-6000 6000]);
-%     
-%     saveas(hFig, [dir_figures filesep 'slice_velocity_v__' sprintf('%5.5d',n)], 'png')
-%     
-%     
-%     %% SLICE vorticity
-%     hFig = init_figure([]);
-%             
-%     centerline_x   = floor( size(fwz,1)/2 );
-%     centerline_y   = floor( size(fwz,2)/2 );
-%     
-%     plot(1:size(fwz,1), fwz(centerline_y,:), '-r');
-%     hold on;
-%     plot(1:size(fwz,2), fwz(:,centerline_x), '--b');
-%     
-%     hLeg = legend('slice crossflow','slice streamwise');
-%     set(hLeg, 'color','none');
-%     
-%     grid on
-%     title('vorticity')
-%     xlabel('distance along slice')
-%     ylabel('vorticity (/s)')
-%     ylim([-200 200]);
-%     
-%     saveas(hFig, [dir_figures filesep 'slice_vorticity_z__ ' sprintf('%5.5d',n)], 'png')
+    %% SLICE velocity U mag
+    hFig = init_figure([]);
+            
+    centerline_x = floor( size(x,1)/2 );
+    centerline_y = floor( size(x,2)/2 );   
+    
+    plot(1:size(x,1), Umag(centerline_y,:), '-r');
+    hold on
+    plot(1:size(y,2), Umag(:,centerline_x), '--b');
+    
+    hLeg = legend('slice crossflow','slice streamwise');
+    set(hLeg, 'color','none');
+        
+    grid on
+    title('velocity magnitude')
+    xlabel('distance along slice')
+    ylabel('speed (pixels / second)')
+    ylim([0 6000]);
+        
+    saveas(hFig, [dir_figures filesep 'slice_velocity_mag__' sprintf('%5.5d',n)], 'png')
+    
+    %% SLICE velocity U
+    hFig = init_figure([]);
+            
+    centerline_x   = floor( size(x,1)/2 );
+    centerline_y   = floor( size(x,2)/2 );
+
+    plot(1:size(x,1), fu(centerline_y,:), '-r');
+    hold on
+    plot(1:size(y,2), fu(:,centerline_x), '--b');
+    
+    hLeg = legend('slice crossflow','slice streamwise');
+    set(hLeg, 'color','none');
+    
+    grid on
+    title('crossflow velocity')
+    xlabel('distance along slice')
+    ylabel('speed (pixels / second)')
+    ylim([-6000 6000]);
+    
+    saveas(hFig, [dir_figures filesep 'slice_velocity_u__' sprintf('%5.5d',n)], 'png')
+
+    
+    %% SLICE velocity V
+    hFig = init_figure([]);
+            
+    centerline_x   = floor( size(x,1)/2 );
+    centerline_y   = floor( size(x,2)/2 );
+        
+    plot(1:size(x,1), fv(centerline_y,:), '-r');
+    hold on;
+    plot(1:size(y,2), fv(:,centerline_x), '--b');
+    
+    hLeg = legend('slice crossflow','slice streamwise');
+    set(hLeg, 'color','none');
+    
+    grid on
+    title('streamwise velocity')
+    xlabel('distance along slice')
+    ylabel('speed (pixels / second)')
+    ylim([-6000 6000]);
+    
+    saveas(hFig, [dir_figures filesep 'slice_velocity_v__' sprintf('%5.5d',n)], 'png')
+    
+    
+    %% SLICE vorticity
+    hFig = init_figure([]);
+            
+    centerline_x   = floor( size(fwz,1)/2 );
+    centerline_y   = floor( size(fwz,2)/2 );
+    
+    plot(1:size(fwz,1), fwz(centerline_y,:), '-r');
+    hold on;
+    plot(1:size(fwz,2), fwz(:,centerline_x), '--b');
+    
+    hLeg = legend('slice crossflow','slice streamwise');
+    set(hLeg, 'color','none');
+    
+    grid on
+    title('vorticity')
+    xlabel('distance along slice')
+    ylabel('vorticity (/s)')
+    ylim([-200 200]);
+    
+    saveas(hFig, [dir_figures filesep 'slice_vorticity_z__ ' sprintf('%5.5d',n)], 'png')
     
     
     %% cleanup (otherwise Matlab may give memory errors after creatting too many figure handles)
@@ -378,87 +378,87 @@ saveas(hFig, [dir_figures filesep 'mean_vorticity_z'], 'png')
 
 
 
-% %% SLICE mean velocity U mag
-% hFig = init_figure([]);
-% 
-% centerline_x = floor( size(x,1)/2 );
-% centerline_y = floor( size(x,2)/2 );   
-% 
-% plot(1:size(x,1), mean_Umag(centerline_y,:), '-r');
-% hold on
-% plot(1:size(y,2), mean_Umag(:,centerline_x), '--b');
-% 
-% hLeg = legend('slice crossflow','slice streamwise');
-% set(hLeg, 'color','none');
-%     
-% grid on
-% title('mean vorticity (/s)')
-% xlabel('distance along slice')
-% ylabel('mean speed (pixels / second)')
-% 
-% saveas(hFig, [dir_figures filesep 'mean_slice_velocity_mag'], 'png')
-% 
-% %% SLICE mean velocity U
-% hFig = init_figure([]);
-% 
-% centerline_x   = floor( size(x,1)/2 );
-% centerline_y   = floor( size(x,2)/2 );
-% 
-% plot(1:size(x,1), mean_u(centerline_y,:), '-r');
-% hold on
-% plot(1:size(y,2), mean_u(:,centerline_x), '--b');
-% 
-% hLeg = legend('slice crossflow','slice streamwise');
-% set(hLeg, 'color','none');
-% 
-% grid on
-% title('mean crossflow velocity')
-% xlabel('distance along slice')
-% ylabel('mean speed (pixels / second)')
-% 
-% saveas(hFig, [dir_figures filesep 'mean_slice_velocity_u'], 'png')
-% 
-% %% SLICE mean velocity V
-% hFig = init_figure([]);
-% 
-% centerline_x   = floor( size(x,1)/2 );
-% centerline_y   = floor( size(x,2)/2 );
-% 
-% 
-% plot(1:size(x,1), mean_v(centerline_y,:), '-r');
-% hold on;
-% plot(1:size(y,2), mean_v(:,centerline_x), '--b');
-% 
-% hLeg = legend('slice crossflow','slice streamwise');
-% set(hLeg, 'color','none');
-% 
-% grid on
-% title('mean streamwise velocity')
-% xlabel('distance along slice')
-% ylabel('mean speed (pixels / second)')
-% 
-% saveas(hFig, [dir_figures filesep 'mean_slice_velocity_v'], 'png')
-% 
-% 
-% %% SLICE mean vorticity
-% hFig = init_figure([]);
-% 
-% centerline_x   = floor( size(mean_wz,1)/2 );
-% centerline_y   = floor( size(mean_wz,2)/2 );
-% 
-% plot(1:size(mean_wz,1), mean_wz(centerline_y,:), '-r');
-% hold on;
-% plot(1:size(mean_wz,2), mean_wz(:,centerline_x), '--b');
-% 
-% hLeg = legend('slice crossflow','slice streamwise');
-% set(hLeg, 'color','none');
-% 
-% grid on
-% title('mean vorticity')
-% xlabel('distance along slice')
-% ylabel('mean vorticity (/s)')
-% 
-% saveas(hFig, [dir_figures filesep 'mean_slice_vorticity'], 'png')
+%% SLICE mean velocity U mag
+hFig = init_figure([]);
+
+centerline_x = floor( size(x,1)/2 );
+centerline_y = floor( size(x,2)/2 );   
+
+plot(1:size(x,1), mean_Umag(centerline_y,:), '-r');
+hold on
+plot(1:size(y,2), mean_Umag(:,centerline_x), '--b');
+
+hLeg = legend('slice crossflow','slice streamwise');
+set(hLeg, 'color','none');
+    
+grid on
+title('mean vorticity (/s)')
+xlabel('distance along slice')
+ylabel('mean speed (pixels / second)')
+
+saveas(hFig, [dir_figures filesep 'mean_slice_velocity_mag'], 'png')
+
+%% SLICE mean velocity U
+hFig = init_figure([]);
+
+centerline_x   = floor( size(x,1)/2 );
+centerline_y   = floor( size(x,2)/2 );
+
+plot(1:size(x,1), mean_u(centerline_y,:), '-r');
+hold on
+plot(1:size(y,2), mean_u(:,centerline_x), '--b');
+
+hLeg = legend('slice crossflow','slice streamwise');
+set(hLeg, 'color','none');
+
+grid on
+title('mean crossflow velocity')
+xlabel('distance along slice')
+ylabel('mean speed (pixels / second)')
+
+saveas(hFig, [dir_figures filesep 'mean_slice_velocity_u'], 'png')
+
+%% SLICE mean velocity V
+hFig = init_figure([]);
+
+centerline_x   = floor( size(x,1)/2 );
+centerline_y   = floor( size(x,2)/2 );
+
+
+plot(1:size(x,1), mean_v(centerline_y,:), '-r');
+hold on;
+plot(1:size(y,2), mean_v(:,centerline_x), '--b');
+
+hLeg = legend('slice crossflow','slice streamwise');
+set(hLeg, 'color','none');
+
+grid on
+title('mean streamwise velocity')
+xlabel('distance along slice')
+ylabel('mean speed (pixels / second)')
+
+saveas(hFig, [dir_figures filesep 'mean_slice_velocity_v'], 'png')
+
+
+%% SLICE mean vorticity
+hFig = init_figure([]);
+
+centerline_x   = floor( size(mean_wz,1)/2 );
+centerline_y   = floor( size(mean_wz,2)/2 );
+
+plot(1:size(mean_wz,1), mean_wz(centerline_y,:), '-r');
+hold on;
+plot(1:size(mean_wz,2), mean_wz(:,centerline_x), '--b');
+
+hLeg = legend('slice crossflow','slice streamwise');
+set(hLeg, 'color','none');
+
+grid on
+title('mean vorticity')
+xlabel('distance along slice')
+ylabel('mean vorticity (/s)')
+
+saveas(hFig, [dir_figures filesep 'mean_slice_vorticity'], 'png')
 
 
 %% Turbulence Intensity
@@ -574,91 +574,91 @@ parfor n = 1:numel(fnames_fluct)
     saveas(hFig, [dir_figures filesep 'fluctuating_vorticity_z__' sprintf('%5.5d',n)], 'png')
     
     
-%     %% SLICE fluctuating velocity U mag
-%     hFig = init_figure([]);
-%             
-%     centerline_x = floor( size(x,1)/2 );
-%     centerline_y = floor( size(x,2)/2 );   
-% 
-%     plot(1:size(x,1), UmagP(centerline_y,:), '-r');
-%     hold on
-%     plot(1:size(y,2), UmagP(:,centerline_x), '--b');
-%     
-%     hLeg = legend('slice crossflow','slice streamwise');
-%     set(hLeg, 'color','none');
-% 
-%     grid on
-%     title('fluctuating velocity magnitude')
-%     xlabel('distance along slice')
-%     ylabel('speed (pixels / second)')
-%     ylim([0 5000]);
-%         
-%     saveas(hFig, [dir_figures filesep 'slice_fluctuating_velocity_mag__' sprintf('%5.5d',n)], 'png')
-%     
-%     %% SLICE fluctuating velocity U
-%     hFig = init_figure([]);
-%             
-%     centerline_x   = floor( size(x,1)/2 );
-%     centerline_y   = floor( size(x,2)/2 );
-%         
-%     plot(1:size(x,1), uP(centerline_y,:), '-r');
-%     hold on
-%     plot(1:size(y,2), uP(:,centerline_x), '--b');
-%     
-%     hLeg = legend('slice crossflow','slice streamwise');
-%     set(hLeg, 'color','none');    
-%     
-%     grid on
-%     title('fluctuating crossflow velocity')
-%     xlabel('distance along slice')
-%     ylabel('speed (pixels / second)')
-%     ylim([-3000 3000]);
-%     
-%     saveas(hFig, [dir_figures filesep 'slice_fluctuating_velocity_u__' sprintf('%5.5d',n)], 'png')
-% 
-%     
-%     %% SLICE fluctuating velocity V
-%     hFig = init_figure([]);
-%             
-%     centerline_x   = floor( size(x,1)/2 );
-%     centerline_y   = floor( size(x,2)/2 );
-%         
-%     plot(1:size(x,1), vP(centerline_y,:), '-r');
-%     hold on;
-%     plot(1:size(y,2), vP(:,centerline_x), '--b');
-%     
-%     hLeg = legend('slice crossflow','slice streamwise');
-%     set(hLeg, 'color','none');    
-%         
-%     grid on
-%     title('fluctuating streamwise velocity')
-%     xlabel('distance along slice')
-%     ylabel('speed (pixels / second)')
-%     ylim([-3000 3000]);
-%     
-%     saveas(hFig, [dir_figures filesep 'slice_fluctuating_velocity_v__' sprintf('%5.5d',n)], 'png')
-%     
-%     
-%     %% SLICE fluctuating vorticity
-%     hFig = init_figure([]);
-%             
-%     centerline_x   = floor( size(wzP,1)/2 );
-%     centerline_y   = floor( size(wzP,2)/2 );
-%     
-%     plot(1:size(wzP,1), wzP(centerline_y,:), '-r');
-%     hold on;
-%     plot(1:size(wzP,2), wzP(:,centerline_x), '--b');
-%     
-%     hLeg = legend('slice crossflow','slice streamwise');
-%     set(hLeg, 'color','none');    
-%         
-%     grid on
-%     title('fluctuating vorticity')
-%     xlabel('distance along slice')
-%     ylabel('vorticity (/s)')
-%     ylim([-200 200]);
-%     
-%     saveas(hFig, [dir_figures filesep 'slice_fluctuating_vorticity_z__ ' sprintf('%5.5d',n)], 'png')
+    %% SLICE fluctuating velocity U mag
+    hFig = init_figure([]);
+            
+    centerline_x = floor( size(x,1)/2 );
+    centerline_y = floor( size(x,2)/2 );   
+
+    plot(1:size(x,1), UmagP(centerline_y,:), '-r');
+    hold on
+    plot(1:size(y,2), UmagP(:,centerline_x), '--b');
+    
+    hLeg = legend('slice crossflow','slice streamwise');
+    set(hLeg, 'color','none');
+
+    grid on
+    title('fluctuating velocity magnitude')
+    xlabel('distance along slice')
+    ylabel('speed (pixels / second)')
+    ylim([0 5000]);
+        
+    saveas(hFig, [dir_figures filesep 'slice_fluctuating_velocity_mag__' sprintf('%5.5d',n)], 'png')
+    
+    %% SLICE fluctuating velocity U
+    hFig = init_figure([]);
+            
+    centerline_x   = floor( size(x,1)/2 );
+    centerline_y   = floor( size(x,2)/2 );
+        
+    plot(1:size(x,1), uP(centerline_y,:), '-r');
+    hold on
+    plot(1:size(y,2), uP(:,centerline_x), '--b');
+    
+    hLeg = legend('slice crossflow','slice streamwise');
+    set(hLeg, 'color','none');    
+    
+    grid on
+    title('fluctuating crossflow velocity')
+    xlabel('distance along slice')
+    ylabel('speed (pixels / second)')
+    ylim([-3000 3000]);
+    
+    saveas(hFig, [dir_figures filesep 'slice_fluctuating_velocity_u__' sprintf('%5.5d',n)], 'png')
+
+    
+    %% SLICE fluctuating velocity V
+    hFig = init_figure([]);
+            
+    centerline_x   = floor( size(x,1)/2 );
+    centerline_y   = floor( size(x,2)/2 );
+        
+    plot(1:size(x,1), vP(centerline_y,:), '-r');
+    hold on;
+    plot(1:size(y,2), vP(:,centerline_x), '--b');
+    
+    hLeg = legend('slice crossflow','slice streamwise');
+    set(hLeg, 'color','none');    
+        
+    grid on
+    title('fluctuating streamwise velocity')
+    xlabel('distance along slice')
+    ylabel('speed (pixels / second)')
+    ylim([-3000 3000]);
+    
+    saveas(hFig, [dir_figures filesep 'slice_fluctuating_velocity_v__' sprintf('%5.5d',n)], 'png')
+    
+    
+    %% SLICE fluctuating vorticity
+    hFig = init_figure([]);
+            
+    centerline_x   = floor( size(wzP,1)/2 );
+    centerline_y   = floor( size(wzP,2)/2 );
+    
+    plot(1:size(wzP,1), wzP(centerline_y,:), '-r');
+    hold on;
+    plot(1:size(wzP,2), wzP(:,centerline_x), '--b');
+    
+    hLeg = legend('slice crossflow','slice streamwise');
+    set(hLeg, 'color','none');    
+        
+    grid on
+    title('fluctuating vorticity')
+    xlabel('distance along slice')
+    ylabel('vorticity (/s)')
+    ylim([-200 200]);
+    
+    saveas(hFig, [dir_figures filesep 'slice_fluctuating_vorticity_z__ ' sprintf('%5.5d',n)], 'png')
 
     
     %% fluctuating TKE

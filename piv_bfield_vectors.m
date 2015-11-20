@@ -14,13 +14,26 @@ if isempty(fnames)
     error('[ERROR] The "post" directory contains no images');
 end
 
-% ASSIGN image pairs (base and cross)
-num_pairs   = numel(fnames) / 2;
-% im_b        = fnames(1:2:end);
-% im_c        = fnames(2:2:end);
-im_b        = fnames(1:num_pairs);
-im_c        = fnames(num_pairs+1:end);
 
+switch OPTIONS.LaserType    
+    case 'pulse'
+        % ASSIGN image pairs (base and cross)
+        num_pairs = numel(fnames) / 2;
+%         im_b      = fnames(1:2:end);
+%         im_c      = fnames(2:2:end);
+        im_b      = fnames(1:num_pairs);
+        im_c      = fnames(num_pairs+1:end);      
+    case 'continuous'
+        num_pairs = numel(fnames) - 2;
+        im_b      = fnames(1:end-1);
+        im_c      = fnames(2:end);
+    otherwise
+        error('[ERROR] what kind of laser?');
+end
+
+
+
+% decide if you want to process ALL the images or just a subset
 if isempty(OPTIONS.max_images)
     % keep all the images
 else
@@ -62,8 +75,6 @@ end
 
 parfor n = 1:num_pairs   
     
-    n
-     
     % NOTE: use matpiv in pixel/second coordinates, and perform the world
     %       coordinate transfomation afterwards  
     if OPTIONS.use_init_vel   
@@ -77,11 +88,11 @@ parfor n = 1:num_pairs
                                         OPTIONS.pivMask, ...
                                         init_u, ...
                                         init_v);
-%                                     
+                                    
 %         % store the new initial velocity for the next iteration
 %         init_u = u;  % WARNING: using initial guess in a parfor loop is non-deterministic
 %         init_v = v;
-%         
+         
     else
         [x, y, u, v, snr, pkh] = matpiv([dir_images_post filesep im_b{n}], ...
                                         [dir_images_post filesep im_c{n}], ...
@@ -89,13 +100,24 @@ parfor n = 1:num_pairs
                                         OPTIONS.t_sep, ...
                                         OPTIONS.overlap, ...
                                         OPTIONS.method, ...
-                                        OPTIONS.coordWorld);
-    end                                                            	
+                                        OPTIONS.coordWorld, ...
+                                        OPTIONS.pivMask);
+    end
     % save the raw data
     par_save([dir_vectors filesep 'raw' filesep 'raw__' sprintf('%5.5d', n)], ...
              x, y, u, v, snr, pkh)
          
-         
+    % DO MASK THIGNS
+    MASK = load('/mnt/data-RAID-1/danny/piv_bfield/example-cases/kurt/CALIBRATION/polymask.mat');
+%     MASK = load(OPTIONS.abspathToMask.matfile)   % PUT THE .mat mask file
+%     in the "calibration" folder
+    m = double( MASK.maske.msk );
+    m = m(9:8:end,9:8:end); % downsampling
+    
+    % APPLY THE MASK (SOMEBODY STOP ME) 
+    u = m .* u;
+    v = m .* v;
+    
     % FILTERING of the raw velocity fields
     fu = u; % "raw data" is no longer needed
     fv = v;
@@ -104,11 +126,16 @@ parfor n = 1:num_pairs
     end
    
          
-    % Coordinate Transformation from pixels to centimeters
-    x   = OPTIONS.T_inv * x;
-    y   = OPTIONS.T_inv * y;
-    fu  = OPTIONS.T_inv * fu;
-    fv  = OPTIONS.T_inv * fv;
+    % Coordinate Transformation from pixels to meters
+    x  = OPTIONS.T_inv * x;
+    y  = OPTIONS.T_inv * y;
+    fu = OPTIONS.T_inv * fu;
+    fv = OPTIONS.T_inv * fv;
+    
+    x  =  x*OPTIONS.mmpp/1000; % (meters)
+    y  =  y*OPTIONS.mmpp/1000; % (meters)
+    fu = fu*OPTIONS.mmpp/1000; % (meters/second)
+    fv = fv*OPTIONS.mmpp/1000; % (meters/second)
     
     % interpolate the outliers because otherwise figures & movies look bad,
     % and vorticity

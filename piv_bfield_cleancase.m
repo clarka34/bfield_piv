@@ -20,8 +20,9 @@ success = mkdir([dir_vectors filesep 'stats']);
 success = mkdir([dir_vectors filesep 'vtk']);
 success = mkdir(dir_figures);
 
-success = mkdir([dir_case filesep 'raw']);
-system(['mv ' dir_case filesep '*.tif ' dir_case filesep 'raw' filesep]);
+% (the user should create the "raw" folder themselves and dump all images into)
+% success = mkdir([dir_case filesep 'raw']);
+% system(['mv ' dir_case filesep '*.tif ' dir_case filesep 'raw' filesep]);
 
 % copy the ParaView state files into same directory (for convenience)
 system(['cp *.pvsm ' dir_case filesep 'vectors' filesep 'vtk']);

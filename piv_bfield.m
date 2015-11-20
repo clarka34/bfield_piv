@@ -20,6 +20,7 @@
 function piv_bfield(OPTIONS, dir_case)
 
 %% STARTUP add to the path any dependencies that this toolbox uses
+% addpath( genpath([pwd filesep 'src' filesep 'MatPIV161']) );
 % addpath( genpath([pwd filesep 'src' filesep 'MatPIV-1.7']) );
 addpath( genpath([pwd filesep 'src' filesep 'MatPIV-1.7_bugfix']) );
 addpath( genpath([pwd filesep 'src' filesep 'sort_nat']) );
@@ -30,6 +31,7 @@ addpath( genpath([pwd filesep 'src' filesep 'pmkmp']) );
 % addpath( genpath([pwd filesep 'src' filesep 'colormaps_mathworks_v11']) );
 % addpath( genpath([pwd filesep 'src' filesep 'export_fig']) );
 % addpath( genpath([pwd filesep 'src' filesep 'toolbox_image']));
+addpath( genpath([pwd filesep 'src' filesep 'par_save']) );
 addpath( genpath([pwd filesep 'src' filesep 'vtkwrite']) );
 addpath( genpath([pwd filesep 'src' filesep 'crop']) );
 % addpath( genpath([pwd filesep 'src' filesep 'figuremaker']) );
@@ -60,11 +62,13 @@ end
 diary off
 
 for n = 1:numel(dir_case)
-           
-    % start a new logfile for each directory of images
-    logfile = [dir_case{n} filesep 'log.dir_case'];
-    disp(logfile);
-    diary(logfile);
+      
+    if OPTIONS.logfiles
+        % start a new logfile for each directory of images
+        logfile = [dir_case{n} filesep 'log.dir_case'];
+        disp(logfile);
+        diary(logfile);   
+    end
     
     % user can specify to skip certain directories
     if any(n == OPTIONS.skip_case)

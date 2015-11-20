@@ -30,7 +30,7 @@ function [maske,x,y,u,v]=mask(ima,wocofile,x,y,u,v)
 
 if ischar(ima)
   [A,p1]=imread(ima);
-  if isrgb(A), A=rgb2gray(A); end
+%   if isrgb(A), A=rgb2gray(A); end
   if ~isempty(p1), A=ind2gray(A,p1); end
   
   if nargin==1
@@ -62,16 +62,16 @@ end
   end
 
   % Convert masks local pixelcoordinates to World-Coordinates
-  D=dir(wocofile);
-  if size(D,1)==1
-      for i=1:length(maske)
-          mapp=load(D(1).name);
-          [maske(i).idxw,maske(i).idyw]=pixel2world(double(maske(i).idx),double(maske(i).idy),...
-              double(maske(i).idx),double(maske(i).idy),mapp.comap(:,1),mapp.comap(:,2));
-      end
-  else
-    disp('No such world coordinate file present!')
-  end
+%   D=dir(wocofile);
+%   if size(D,1)==1
+%       for i=1:length(maske)
+%           mapp=load(D(1).name);
+%           [maske(i).idxw,maske(i).idyw]=pixel2world(double(maske(i).idx),double(maske(i).idy),...
+%               double(maske(i).idx),double(maske(i).idy),mapp.comap(:,1),mapp.comap(:,2));
+%       end
+%   else
+%     disp('No such world coordinate file present!')
+%   end
   
   % Set points inside polygon to NaN if velocity field was given in input
   if nargin>2

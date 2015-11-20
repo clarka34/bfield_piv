@@ -33,11 +33,17 @@ end
 dir_images_raw  = [dir_case filesep 'raw'];
 dir_images_post = [dir_case filesep 'post'];
     
-if OPTIONS.ImageJ
-	% shows the GUI and windows pop-up, useful for debugging
-%     system(['imagej -t     imageJ-macro-runstack.ijm ' dir_images_raw ',' dir_images_post]);
-    % does not show any GUI or windows, better for headless mode
-    system(['imagej -batch imageJ-macro-runstack.ijm ' dir_images_raw ',' dir_images_post]);
+if OPTIONS.ImageJ  
+    switch OPTIONS.LaserType    
+        case 'pulse'
+%             system(['imagej -t     imageJ-macro-runstack-pulse.ijm ' dir_images_raw ',' dir_images_post]);    % shows the GUI and windows pop-up, useful for debugging
+            system(['imagej -batch imageJ-macro-runstack-pulse.ijm ' dir_images_raw ',' dir_images_post]);    % does not show any GUI or windows, better for headless mode
+        case 'continuous'
+%             system(['imagej -t     imageJ-macro-runstack-continuous.ijm ' dir_images_raw ',' dir_images_post]);    % shows the GUI and windows pop-up, useful for debugging            
+            system(['imagej -batch imageJ-macro-runstack-continuous.ijm ' dir_images_raw ',' dir_images_post]);    % does not show any GUI or windows, better for headless mode
+        otherwise
+            error('[ERROR] what kind of laser?');
+    end  
 else
     copyfile(dir_images_raw,dir_images_post)
 end
