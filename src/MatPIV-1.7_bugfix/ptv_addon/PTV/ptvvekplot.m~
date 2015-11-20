@@ -1,0 +1,12 @@
+function [ha]=ptvvekplot(p,field,scale);
+% PTVVEKPLOT - plot vectors as arrows
+%
+% This function takes the output from MATPTV as an input-argument
+% along with specification of which vector field to plot
+%
+% example:
+%
+% >> ptvvekplot(particles(2),'ptvgridvel',0.01);
+% this will plot the gridded velocity
+%
+
