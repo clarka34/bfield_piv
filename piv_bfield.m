@@ -17,7 +17,7 @@
 %   OR just open matlab like this from command prompt (THIS SEEMS LIKE THE BEST SOLUTION, it works for me now): 
 %   LD_PRELOAD=/usr/lib64/libstdc++.so.6.0.19 matlab
 
-function piv_bfield(OPTIONS, dir_case)
+function piv_bfield(OPTIONS)
 
 %% STARTUP add to the path any dependencies that this toolbox uses
 % addpath( genpath([pwd filesep 'src' filesep 'MatPIV161']) );
@@ -60,7 +60,7 @@ end
 
 % start a clean logfile
 diary off
-
+dir_case = OPTIONS.dir_case;
 for n = 1:numel(dir_case)
       
     if OPTIONS.logfiles
@@ -103,7 +103,7 @@ for n = 1:numel(dir_case)
     
     %% 2) PROCESS the vector fields: velocity,vorticity
     % this is where MatPIV is called to performs the correlations between images, and filtering
-    piv_bfield_vectors(OPTIONS, dir_case{n})
+    piv_bfield_vectors(OPTIONS, dir_case{n}, OPTIONS.relpathToMask{n})
     
     
     %% 3) POST-PROCESS compute statistics

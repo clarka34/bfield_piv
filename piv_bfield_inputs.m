@@ -15,7 +15,7 @@ OPTIONS.method          = 'multin';         % Use interrogation window offset (t
 OPTIONS.coordWorld      = [];               % no coordinate system defined yet, perform MatPIV all in pixel coordinates
 OPTIONS.mmpp            = 27/1220;          % mm per pixel (alternative calibration to MatPIV's "woco" method.  This "mmpp" method uses a ruler instead of full calibration plate method.  Set as empty [] to stay in a pixelized world
 OPTIONS.pivMask         = [];               % no mask is used
-% OPTIONS.pivMask         = '/mnt/data-RAID-1/danny/piv_bfield/example-cases/kurt/CALIBRATION/polymask_Test4.mat';               % no mask is used
+OPTIONS.relpathToMask   = {'polymask_Test4.mat'}; %Mask file Need to be in CALIBRATION folder of the directory
 OPTIONS.use_init_vel    = false;            % compute an initial velocity for each image pair?      
 OPTIONS.applyFilters    = true;             % perform filtering via MatPIV methods (you may want to customize which filter method you use ... our camera provide good enough image quality, so did not require all filter methods)
 OPTIONS.thold_global    = 3;                % threshold for use with globalfiltering
@@ -32,16 +32,16 @@ OPTIONS.skip_case       = [];               % skip these cases (default to empty
 OPTIONS.max_images      = [];               % if empty uses all image pairs, or can set a maximum number incase your computer runs out of memory
 OPTIONS.firstTime       = true;             % starts from clean slate, deletes all files in directory and setups subfolders, keeping the raw images
 OPTIONS.findZombies     = false;            % our camera sometimes drops the first or last (or both)  laser pulse, detect and remove "zombie" images
-OPTIONS.ImageJ          = true;             % Use ImageJ to do pre-processing on the raw images?  This step brings each image pair to same background level, performs contrasting, and converts to 8-bit images (for MatPIV)
+OPTIONS.ImageJ          = false;             % Use ImageJ to do pre-processing on the raw images?  This step brings each image pair to same background level, performs contrasting, and converts to 8-bit images (for MatPIV)
 OPTIONS.FFMPEG          = true;             % if false then no movies are made via FFMPEG, or FFMPEG is not configured correctly on your system (also Matlab has some lame difficulties with running FFMPEG, it is possible to resolve, see notes within)
-OPTIONS.fps             = 3;                % frames per second for creating movies 
+OPTIONS.fps             = 60;                % frames per second for creating movies 
 OPTIONS.POD             = false;            % compute Proper Orthogonal Decomposition modes (incomplete)
 OPTIONS.inflow          = 0.9;              % inflow speed (m/s) [experimental, this only affects creation of some figures]
 
 %% SINGLE CASE PROCESS (note relative vs absolute paths)
 % dir_case{1} = [pwd filesep 'example-cases' filesep 'axial-flow-case-1'];
 % dir_case{1} = [pwd filesep 'example-cases' filesep 'kurt'];
-dir_case{1} = '/mnt/data-RAID-1/Kurt/Kurt/Test4_15mL_40BPM_50Sys';
+%dir_case{1} = '/mnt/data-RAID-1/Kurt/Kurt/Test4_15mL_40BPM_50Sys';
 % dir_case{1} = '/mnt/data-RAID-1/danny/Bamfield-PIV/example_cases/axial-flow-case-1';
 
 %% BATCH CASE PROCESS
@@ -49,12 +49,16 @@ dir_case{1} = '/mnt/data-RAID-1/Kurt/Kurt/Test4_15mL_40BPM_50Sys';
 % dir_case{1} = '/mnt/data-RAID-1/danny/Bamfield-PIV/PIV_Wake_YawAngle20degree_083015/PIV_Wake_YawAngle20degree_083015_rotorside_2D/PIV_Wake_YawAngle20degree_083015_rotorside_2D_TSR6_1ms';
 % dir_case{2} = '/mnt/data-RAID-1/danny/Bamfield-PIV/PIV_Wake_YawAngle20degree_083015/PIV_Wake_YawAngle20degree_083015_rotorside_2D/PIV_Wake_YawAngle20degree_083015_rotorside_2D_TSR6_1p2ms';
 % dir_case{3} = '/mnt/data-RAID-1/danny/Bamfield-PIV/PIV_Wake_YawAngle20degree_083015/PIV_Wake_YawAngle20degree_083015_rotorside_2D/PIV_Wake_YawAngle20degree_083015_rotorside_2D_TSR7_1ms';
-
-
-
+dir_case{1} = '/mnt/data-RAID-1/Kurt/Kurt/Test5_20mL_57BPM_37Sys'; % upstream
+dir_case{2} = '/mnt/data-RAID-1/Kurt/Kurt/Test6_20mL_57BPM_37Sys'; % bifurcation
+dir_case{3} = '/mnt/data-RAID-1/Kurt/Kurt/Test3_15mL_40BPM_50Sys'; % bifurcation
+dir_Case{4} = '/mnt/data-RAID-1/Kurt/Kurt/Test4_15mL_40BPM_50Sys'; % upstream
+masks = {'polymask_Test5.mat', 'polymask_Test6.mat', 'polymask_Test3.mat', 'polymask_Test4.mat'};
+%% create an OPTION for the dir_case and multiple masks
+OPTIONS.dir_case = dir_case;
+OPTIONS.relpathToMask = masks;
 %% END there should be no USER INPUTS beyond this point
 %  best luck and happy PIV, run the entire toolchain now:
 
 piv_bfield_systemcheck();       % check if system is fully compatible
-piv_bfield(OPTIONS, dir_case);  % run the toolchain
-
+piv_bfield(OPTIONS);  % run the toolchain

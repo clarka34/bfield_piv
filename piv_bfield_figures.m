@@ -18,15 +18,15 @@ dir_figures = [dir_case filesep 'figures'];
 
 % Define limits of colorbar scaling, this is flow dependent
 % clims_Umag = [1000 4000];   % in pixel world
-clims_Umag = [0 1];         % in meters world
+clims_Umag = [0.0 1.7];         % in meters world
 % clims_u    = [-2000 2000]; 
-clims_u    = [-0.5 0.5]; 
+clims_u    = [-0.7 0.7]; 
 
 
 % define some colormaps
 % pmkmp_maps = {'IsoAZ' 'IsoAZ180' 'Edge' 'Swtth' 'LinLhot' 'LinearL' 'IsoAZ'};  
 cmap_LinLHot = flipud(pmkmp(11, 'LinLhot'));
-cmap_bipolar = bipolar(21, 0.85);
+cmap_bipolar = bipolar(21, 0.80);
 
 
 % set some default font sizes
@@ -550,7 +550,7 @@ parfor n = 1:numel(fnames_fluct)
     
     axis square
     colorbar;
-    caxis([0 5000])
+    caxis([0 200])
         
     saveas(hFig, [dir_figures filesep 'fluctuating_velocity_v__' sprintf('%5.5d',n)], 'png')
     
@@ -565,7 +565,7 @@ parfor n = 1:numel(fnames_fluct)
     
     axis square
     colorbar;
-    caxis([-80 80])
+    caxis([-5 5])
     
     title('fluctuating Vorticity (/s)')
     xlabel('')

@@ -1,4 +1,4 @@
-function piv_bfield_vectors(OPTIONS, dir_case)
+function piv_bfield_vectors(OPTIONS, dir_case, mask_n)
 
 %% PROCESSING velocities and vorticity
 
@@ -107,10 +107,11 @@ parfor n = 1:num_pairs
     par_save([dir_vectors filesep 'raw' filesep 'raw__' sprintf('%5.5d', n)], ...
              x, y, u, v, snr, pkh)
          
-    % DO MASK THIGNS
-    MASK = load('/mnt/data-RAID-1/danny/piv_bfield/example-cases/kurt/CALIBRATION/polymask.mat');
-%     MASK = load(OPTIONS.abspathToMask.matfile)   % PUT THE .mat mask file
-%     in the "calibration" folder
+    % DO MASK THINGS
+    MASK = load([char(dir_case) filesep 'CALIBRATION' filesep char(mask_n)]);   % PUT THE .mat mask file
+%   MASK = load('/mnt/data-RAID-1/danny/piv_bfield/example-cases/kurt/CALIBRATION/polymask.mat');
+%   MASK = load(OPTIONS.abspathToMask.matfile)   % PUT THE .mat mask file
+%     in the "CALIBRATION" folder
     m = double( MASK.maske.msk );
     m = m(9:8:end,9:8:end); % downsampling
     

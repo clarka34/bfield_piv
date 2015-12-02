@@ -28,8 +28,9 @@ dumIm=getImageID();
 // run("Z Project...", "projection=[Average Intensity]");
 // imageCalculator("Subtract create stack", "raw","AVG_raw");
 run("Enhance Contrast", "saturated=0.35");
-run("Apply LUT", "stack");
 run("8-bit");
+//run("Apply LUT", "stack");
+
 run("Image Sequence... ", "format=TIFF name=" + name_new_A + " save=" + file_new_A);
 // close all the "A" images
 run("Close All");
