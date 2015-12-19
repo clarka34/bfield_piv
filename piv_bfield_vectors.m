@@ -1,4 +1,4 @@
-function piv_bfield_vectors(OPTIONS, dir_case, mask_n)
+function piv_bfield_vectors(OPTIONS, dir_case)
 
 %% PROCESSING velocities and vorticity
 
@@ -74,96 +74,128 @@ end
 
 
 parfor n = 1:num_pairs   
-    
-    % NOTE: use matpiv in pixel/second coordinates, and perform the world
-    %       coordinate transfomation afterwards  
-    if OPTIONS.use_init_vel   
-        [x, y, u, v, snr, pkh] = matpiv([dir_images_post filesep im_b{n}], ...
-                                        [dir_images_post filesep im_c{n}], ...
-                                        OPTIONS.win_size, ...
-                                        OPTIONS.t_sep, ...
-                                        OPTIONS.overlap, ...
-                                        OPTIONS.method, ...
-                                        OPTIONS.coordWorld, ...
-                                        OPTIONS.pivMask, ...
-                                        init_u, ...
-                                        init_v);
-                                    
-%         % store the new initial velocity for the next iteration
-%         init_u = u;  % WARNING: using initial guess in a parfor loop is non-deterministic
-%         init_v = v;
-         
-    else
-        [x, y, u, v, snr, pkh] = matpiv([dir_images_post filesep im_b{n}], ...
-                                        [dir_images_post filesep im_c{n}], ...
-                                        OPTIONS.win_size, ...
-                                        OPTIONS.t_sep, ...
-                                        OPTIONS.overlap, ...
-                                        OPTIONS.method, ...
-                                        OPTIONS.coordWorld, ...
-                                        OPTIONS.pivMask);
+    if OPTIONS.runMatPIV
+        % NOTE: use matpiv in pixel/second coordinates, and perform the world
+        %       coordinate transfomation afterwards  
+        if OPTIONS.use_init_vel   
+            [x, y, u, v, snr, pkh] = matpiv([dir_images_post filesep im_b{n}], ...
+                                            [dir_images_post filesep im_c{n}], ...
+                                            OPTIONS.win_size, ...
+                                            OPTIONS.t_sep, ...
+                                            OPTIONS.overlap, ...
+                                            OPTIONS.method, ...
+                                            OPTIONS.coordWorld, ...
+                                            OPTIONS.pivMask, ...
+                                            init_u, ...
+                                            init_v);
+
+    %         % store the new initial velocity for the next iteration
+    %         init_u = u;  % WARNING: using initial guess in a parfor loop is non-deterministic
+    %         init_v = v;
+
+        else
+            [x, y, u, v, snr, pkh] = matpiv([dir_images_post filesep im_b{n}], ...
+                                            [dir_images_post filesep im_c{n}], ...
+                                            OPTIONS.win_size, ...
+                                            OPTIONS.t_sep, ...
+                                            OPTIONS.overlap, ...
+                                            OPTIONS.method, ...
+                                            OPTIONS.coordWorld, ...
+                                            OPTIONS.pivMask);
+        end
+        
+        % DO MASK THINGS
+        if ~isempty(OPTIONS.relpathToMask)
+            MASK = load([char(dir_case) filesep 'CALIBRATION' filesep char(mask_n)]);   % load the .mat mask file (created with MatPIV utility)
+            m    = double( MASK.maske.msk );
+            m    = m(9:8:end,9:8:end); % downsampling (THIS IS HARDCODED - should generalize this by detecting image size?)
+
+            % PUT ON THE MASK (SOMEBODY STOP ME) 
+            u = m .* u;
+            v = m .* v;
+        end
+
+        % Coordinate Transformation from pixels to meters
+        xT = OPTIONS.T_inv * x;
+        yT = OPTIONS.T_inv * y;
+        uT = OPTIONS.T_inv * u;
+        vT = OPTIONS.T_inv * v;
+        xT = xT*OPTIONS.mmpp/1000;      % (meters)
+        yT = yT*OPTIONS.mmpp/1000;      % (meters)
+        uT = uT*OPTIONS.mmpp/1000;      % (meters/second)
+        vT = vT*OPTIONS.mmpp/1000;      % (meters/second)
+
+        % save the raw data, and has been transformed into real world coordinates
+        x = xT; % cumbersome to rename variable so many times ... something about parfor loop overwriting temporary variables
+        y = yT;
+        u = uT;
+        v = vT;
+        par_save([dir_vectors filesep 'raw' filesep 'raw__' sprintf('%5.5d', n)], ...
+                 x, y, u, v, snr, pkh)
+
     end
-    % save the raw data
-    par_save([dir_vectors filesep 'raw' filesep 'raw__' sprintf('%5.5d', n)], ...
-             x, y, u, v, snr, pkh)
-         
-    % DO MASK THINGS
-    MASK = load([char(dir_case) filesep 'CALIBRATION' filesep char(mask_n)]);   % PUT THE .mat mask file
-%   MASK = load('/mnt/data-RAID-1/danny/piv_bfield/example-cases/kurt/CALIBRATION/polymask.mat');
-%   MASK = load(OPTIONS.abspathToMask.matfile)   % PUT THE .mat mask file
-%     in the "CALIBRATION" folder
-    m = double( MASK.maske.msk );
-    m = m(9:8:end,9:8:end); % downsampling
-    
-    % APPLY THE MASK (SOMEBODY STOP ME) 
-    u = m .* u;
-    v = m .* v;
-    
+        
     % FILTERING of the raw velocity fields
-    fu = u; % "raw data" is no longer needed
-    fv = v;
-    if OPTIONS.applyFilters         
-        [fu, fv] = piv_bfield_filters(OPTIONS, x, y, fu, fv);
+    if OPTIONS.runMatPIV && OPTIONS.applyFilters
+        % MatPIV was re-run, so "raw data" has changed
+        [u, v] = piv_bfield_filters(OPTIONS, x, y, u, v, snr, pkh);
+        
+    elseif ~OPTIONS.runMatPIV && OPTIONS.applyFilters
+        % not re-running MatPIV, but applying a new filter
+        % at this point the raw velocity vectors are already saved to hard
+        % drive, should load them from hard drive to apply new filtering
+        RAW    = load([dir_vectors filesep 'raw' filesep 'raw__' sprintf('%5.5d', n) '.mat']);
+        [u, v] = piv_bfield_filters(OPTIONS, RAW.x, RAW.y, RAW.u, RAW.v, RAW.snr, RAW.pkh);
+        
+    elseif ~OPTIONS.runMatPIV && ~OPTIONS.applyFilters
+        % not re-running MatPIV, and not applying a new filter (so only the post-processing stuff will be re-run)
+        % at this point, the "filtered data" are already saved to hard
+        % drive, should load them 
+        RAW = load([dir_vectors filesep 'raw' filesep 'raw__' sprintf('%5.5d', n)]);
+        u   = RAW.u;
+        v   = RAW.v;
+        
+    else
+        error('[ERROR] unrecognized options related to re-running MatPIV or filtering');
     end
-   
-         
-    % Coordinate Transformation from pixels to meters
-    x  = OPTIONS.T_inv * x;
-    y  = OPTIONS.T_inv * y;
-    fu = OPTIONS.T_inv * fu;
-    fv = OPTIONS.T_inv * fv;
     
-    x  =  x*OPTIONS.mmpp/1000; % (meters)
-    y  =  y*OPTIONS.mmpp/1000; % (meters)
-    fu = fu*OPTIONS.mmpp/1000; % (meters/second)
-    fv = fv*OPTIONS.mmpp/1000; % (meters/second)
+    % "raw data" is no longer needed, consider it now "filtered data"
+    fu = u;
+    fv = v;
     
-    % interpolate the outliers because otherwise figures & movies look bad,
-    % and vorticity
-    [fu, fv] = naninterp(fu, fv, 'linear', x, y);
+    if ~OPTIONS.runMatPIV && ~OPTIONS.applyFilters
+        % not re-running MatPIV, and not applying a new filter (so only the post-processing stuff will be re-run)
+        % at this point, the 'instantaneous' .mat files, and corresponding
+        % VTK files are saved to hard drive ... do nothing
+        
+    else
+        % either MatPIV was re-run, or a new filtering was applied (the "raw data" has been changed)
+        
+        % interpolate the outliers because otherwise figures & movies (post-processing) look bad,
+        % and vorticity
+        [fu, fv] = naninterp(fu, fv, 'linear', x, y);
 
-    % VORTICITY 
-    % interpolate the outliers because computing the curl fails miserably if many NANs are present, and figures/movies look bad
-    fwz = vorticity(x, y, fu, fv, OPTIONS.method_vort);
-    fwz = padarray(fwz,[offset offset]);                % pad with zeros to make same size as velocity arrays
-    
-    % save instantaneous variables, the filtered and transformed vectors (even if no filtering/transform was performed, just so filenaming is consistent)
-    par_save([dir_vectors filesep 'instantaneous' filesep 'instantaneous__' sprintf('%5.5d', n)], ...
-             x, y, fu, fv, fwz)
-         
-    % export instantaneous variables as VTK files, compatible with ParaView and VisIt
-    z   = zeros(size(x));         % fake 3rd dimension coordinate
-    fw  = zeros(size(x));         % fake 3rd dimension velocity
-    fwx = zeros(size(x));         % fake 1st dimension vorticity
-    fwy = zeros(size(x));         % fake 2nd dimension vorticity
-    vtkwrite([dir_vectors filesep 'vtk' filesep 'vtk_velocity_instantaneous__' sprintf('%5.5d', n) '.vtk'], ...
-             'structured_grid',x,y,z, 'vectors','velocity',fu,fv,fw)  
-    vtkwrite([dir_vectors filesep 'vtk' filesep 'vtk_vorticity_instantaneous__' sprintf('%5.5d', n) '.vtk'], ...
-             'structured_grid',x,y,z, 'vectors','vorticity',fwx,fwy,fwz)
-         
-         
+        % VORTICITY 
+        % interpolate the outliers because computing the curl fails miserably if many NANs are present, and figures/movies look bad
+        fwz = vorticity(x, y, fu, fv, OPTIONS.method_vort);
+        fwz = padarray(fwz,[offset offset]);                % pad with zeros to make same size as velocity arrays
+
+        % save instantaneous variables, the filtered and transformed vectors (even if no filtering/transform was performed, just so filenaming is consistent)
+        par_save([dir_vectors filesep 'instantaneous' filesep 'instantaneous__' sprintf('%5.5d', n)], ...
+                 x, y, fu, fv, fwz)
+
+        % export instantaneous variables as VTK files, compatible with ParaView and VisIt
+        z   = zeros(size(x));         % fake 3rd dimension coordinate
+        fw  = zeros(size(x));         % fake 3rd dimension velocity
+        fwx = zeros(size(x));         % fake 1st dimension vorticity
+        fwy = zeros(size(x));         % fake 2nd dimension vorticity
+        vtkwrite([dir_vectors filesep 'vtk' filesep 'vtk_velocity_instantaneous__' sprintf('%5.5d', n) '.vtk'], ...
+                 'structured_grid',x,y,z, 'vectors','velocity',fu,fv,fw)  
+        vtkwrite([dir_vectors filesep 'vtk' filesep 'vtk_vorticity_instantaneous__' sprintf('%5.5d', n) '.vtk'], ...
+                 'structured_grid',x,y,z, 'vectors','vorticity',fwx,fwy,fwz)
+    end
+           
 end
-
 
 end % function
 

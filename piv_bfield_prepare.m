@@ -1,7 +1,9 @@
 function piv_bfield_prepare(OPTIONS, dir_case)
 
+piv_bfield_systemcheck();       % check if system is fully compatible
+
 if OPTIONS.firstTime
-    piv_bfield_cleancase(dir_case);
+    piv_bfield_cleancase(OPTIONS.dir_case);
 end
     
 if OPTIONS.findZombies && OPTIONS.ImageJ
@@ -9,7 +11,7 @@ if OPTIONS.findZombies && OPTIONS.ImageJ
     % manually inspect the first and last image pairs, you will visually
     % see if there is any correlation, and then a GUI prompt asks you if
     % first or last images should be deleted (because it is a zombie)
-    piv_bfield_findZombies(dir_case);
+    piv_bfield_findZombies(OPTIONS.dir_case);
 end
     
 % run ImageJ to:
@@ -33,19 +35,32 @@ end
 dir_images_raw  = [dir_case filesep 'raw'];
 dir_images_post = [dir_case filesep 'post'];
     
-if OPTIONS.ImageJ  
-    switch OPTIONS.LaserType    
-        case 'pulse'
-%             system(['imagej -t     imageJ-macro-runstack-pulse.ijm ' dir_images_raw ',' dir_images_post]);    % shows the GUI and windows pop-up, useful for debugging
-            system(['imagej -batch imageJ-macro-runstack-pulse.ijm ' dir_images_raw ',' dir_images_post]);    % does not show any GUI or windows, better for headless mode
-        case 'continuous'
-%             system(['imagej -t     imageJ-macro-runstack-continuous.ijm ' dir_images_raw ',' dir_images_post]);    % shows the GUI and windows pop-up, useful for debugging            
-            system(['imagej -batch imageJ-macro-runstack-continuous.ijm ' dir_images_raw ',' dir_images_post]);    % does not show any GUI or windows, better for headless mode
-        otherwise
-            error('[ERROR] what kind of laser?');
-    end  
-else
-    copyfile(dir_images_raw,dir_images_post)
+if OPTIONS.runMatPIV % otherwise the images are never re-used
+    
+    if OPTIONS.ImageJ
+        switch OPTIONS.LaserType    
+            case 'pulse'
+    %             system(['imagej -t     imageJ-macro-runstack-pulse.ijm ' dir_images_raw ',' dir_images_post]);          % shows the GUI and windows pop-up, useful for debugging
+                system(['imagej -batch imageJ-macro-runstack-pulse.ijm ' dir_images_raw ',' dir_images_post]);          % does not show any GUI or windows, better for headless mode
+            case 'continuous'
+    %             system(['imagej -t     imageJ-macro-runstack-continuous.ijm ' dir_images_raw ',' dir_images_post]);     % shows the GUI and windows pop-up, useful for debugging            
+                system(['imagej -batch imageJ-macro-runstack-continuous.ijm ' dir_images_raw ',' dir_images_post]);     % does not show any GUI or windows, better for headless mode
+            otherwise
+                error('[ERROR] what kind of laser?');
+        end
+    
+    else
+        % only run ImageJ to convert to 8-bit required for MatPIV
+        switch OPTIONS.LaserType    
+            case 'pulse'
+                system(['imagej -batch imageJ-macro-convert-pulse.ijm ' dir_images_raw ',' dir_images_post]);    
+            case 'continuous'
+                system(['imagej -batch imageJ-macro-convert-continuous.ijm ' dir_images_raw ',' dir_images_post]);    
+            otherwise
+                error('[ERROR] what kind of laser?');
+        end
+    end
+           
 end
 
 end % function

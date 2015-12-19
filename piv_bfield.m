@@ -17,7 +17,7 @@
 %   OR just open matlab like this from command prompt (THIS SEEMS LIKE THE BEST SOLUTION, it works for me now): 
 %   LD_PRELOAD=/usr/lib64/libstdc++.so.6.0.19 matlab
 
-function piv_bfield(OPTIONS)
+function piv_bfield(OPTIONS,dir_case)
 
 %% STARTUP add to the path any dependencies that this toolbox uses
 % addpath( genpath([pwd filesep 'src' filesep 'MatPIV161']) );
@@ -37,30 +37,19 @@ addpath( genpath([pwd filesep 'src' filesep 'crop']) );
 % addpath( genpath([pwd filesep 'src' filesep 'figuremaker']) );
 
 
-%% INITIALIZE parallel Matlab
+%% INITIALIZE parallel Matlab (tested in R2015b ... it may not work in older versions like R2011b)
 % because of reasons, ensure that you have no files open when opening the parallel pool
 fclose('all');
 
-if OPTIONS.useParallel 
-    % Check whether the worker pool is currently open:
-    isOpen = matlabpool('size');
-    if isOpen > 0
-        % use the number of cores already allocated
-    else   % try to use the maximum number cores
-    %     nCPU = str2num( getenv('NUMBER_OF_PROCESSORS') );
-    %     matlabpool('local', nCPU);
-    %     matlabpool(nCPU)
-        matlabpool open 12      % on my superior server (R2011b limits to 12 cores ... newer versions allow more/ulimited cores I read)
-    %     matlabpool open 8       % on my lessor laptop
-    end
+delete(gcp('nocreate')); % in case we are re-sizing the pool, or this option deactivated
+if OPTIONS.parallel_nCPUs > 1           
+    parpool('local',OPTIONS.parallel_nCPUs);
 end
-
 
 %% RUN the main loop (the entire toolchain of this toolbox)
 
 % start a clean logfile
 diary off
-dir_case = OPTIONS.dir_case;
 for n = 1:numel(dir_case)
       
     if OPTIONS.logfiles
@@ -103,8 +92,7 @@ for n = 1:numel(dir_case)
     
     %% 2) PROCESS the vector fields: velocity,vorticity
     % this is where MatPIV is called to performs the correlations between images, and filtering
-    piv_bfield_vectors(OPTIONS, dir_case{n}, OPTIONS.relpathToMask{n})
-    
+    piv_bfield_vectors(OPTIONS, dir_case{n})
     
     %% 3) POST-PROCESS compute statistics
     % computes statistical quantities from image stack
