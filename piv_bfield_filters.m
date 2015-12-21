@@ -10,14 +10,13 @@ function [fu, fv] = piv_bfield_filters(OPTIONS, x, y, fu, fv, snr, pkh)
 [fu, fv] = peakfilt(x, y, fu, fv, pkh, OPTIONS.thold_peak);
 
 % global filtering
-[fu, fv] = globfilt(x, y, fu, fv, OPTIONS.thold_global); % change to call with LOOP method
+[fu, fv] = globfilt(x, y, fu, fv, OPTIONS.thold_global);
 
 % local filtering
-[fu, fv] = localfilt(x, y, fu, fv, OPTIONS.thold_local, 'median', OPTIONS.thold_local_num);
+[fu, fv] = localfilt(x, y, fu, fv, OPTIONS.thold_local, OPTIONS.thold_local_stat, OPTIONS.thold_local_num);
 
 % interpolate the outliers
 % [fu, fv] = naninterp(fu, fv, OPTIONS.int, x, y);
-
 
 end % function
 

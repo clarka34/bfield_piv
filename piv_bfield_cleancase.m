@@ -7,13 +7,14 @@ dir_figures     = [dir_case filesep 'figures'];
 
 %% now delete all files in each subdirectory
 % [status, message, messageid] = rmdir(folderName,'s') removes the folder folderName and its contents from the current folder, returning the status, a message, and the MATLAB� message ID.
-%status = rmdir(dir_images_post,'s');
+status = rmdir(dir_images_post,'s');
 status = rmdir(dir_vectors,'s');
 status = rmdir(dir_figures,'s');
 
 %success = mkdir(dir_images_post);
 success = mkdir(dir_vectors);
 success = mkdir([dir_vectors filesep 'raw']);
+success = mkdir(dir_images_post);
 success = mkdir([dir_vectors filesep 'instantaneous']);
 success = mkdir([dir_vectors filesep 'fluctuating']);
 success = mkdir([dir_vectors filesep 'stats']);

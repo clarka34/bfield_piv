@@ -62,17 +62,17 @@ parfor n = 1:numel(fnames_inst)
     
     %% Load in the variables to plot
     % load the .mat file of raw vectors 
-    raw = load([dir_case filesep 'vectors' filesep 'raw' filesep fnames_raw{n}]);
-    pkh = raw.pkh;
-    snr = raw.snr;
+    RAW = load([dir_case filesep 'vectors' filesep 'raw' filesep fnames_raw{n}]);
+    pkh = RAW.pkh;
+    snr = RAW.snr;
     
     % load the .mat file of instantaneous, filtered and transformed data 
-    post = load([dir_case filesep 'vectors' filesep 'instantaneous' filesep fnames_inst{n}]);
-    x   = post.x;
-    y   = post.y;
-    fu  = post.fu;
-    fv  = -1 .* post.fv;    % because flow in images is going up-to-down
-    fwz = post.fwz;
+    POST = load([dir_case filesep 'vectors' filesep 'instantaneous' filesep fnames_inst{n}]);
+    x    = POST.x;
+    y    = POST.y;
+    fu   = POST.fu;
+    fv   = -1 .* post.fv;    % because flow in images is going up-to-down
+    fwz  = post.fwz;
     
     %% velocity magnitude 
     hFig = init_figure([]);
@@ -250,19 +250,19 @@ end % INSTANTANEOUS
 
 %% plot statistical variables
 % load in the statistics variables
-stats = load([dir_case filesep 'vectors' filesep 'stats' filesep 'stats.mat']);
-x         = stats.x;
-y         = stats.y;
-mean_u    = stats.mean_u;
-mean_v    = -1 .* stats.mean_v;
-mean_Umag = stats.mean_Umag;
-std_u     = stats.std_u;
-std_v     = stats.std_v;
-std_mag   = stats.std_mag;
-rms_u     = stats.rms_u;
-rms_v     = stats.rms_v;
-rms_mag   = stats.rms_mag;
-mean_wz   = stats.mean_wz;
+STATS     = load([dir_case filesep 'vectors' filesep 'stats' filesep 'stats.mat']);
+x         = STATS.x;
+y         = STATS.y;
+mean_u    = STATS.mean_u;
+mean_v    = -1 .* STATS.mean_v;
+mean_Umag = STATS.mean_Umag;
+std_u     = STATS.std_u;
+std_v     = STATS.std_v;
+std_mag   = STATS.std_mag;
+rms_u     = STATS.rms_u;
+rms_v     = STATS.rms_v;
+rms_mag   = STATS.rms_mag;
+mean_wz   = STATS.mean_wz;
  
 %% mean velocity magnitude normalized by inflow velocity
 hFig = init_figure([]);
@@ -271,8 +271,8 @@ contourf(x, y, mean_Umag ./ OPTIONS.inflow);
 
 colormap(cmap_LinLHot)
 
-title(['mean velocity deficit magnitude ' units_speed])
-xlabel('')
+title(['mean velocity deficit magnitude, mean_U_mag / U_inflow'])
+xlabel('mean_U_mag / U_inflow')
 ylabel('')
 
 axis square
@@ -339,23 +339,23 @@ saveas(hFig, [dir_figures filesep 'mean_velocity_v'], 'png')
 
 
 %% Standard Deviation Magnitude
-% hFig = init_figure([]);
-% 
-% contourf(x, y, std_mag);
-% 
-% colormap(cmap_LinLHot)
-% colorbar;
-% 
-% title('')
-% xlabel('')
-% ylabel('')
-% ylabel(cbar, ['standard deviation ' units_speed])
-% 
-% axis square
-% colorbar;
-% caxis([0 400])
-% 
-% saveas(hFig, [dir_figures filesep 'standard-deviation_mag'], 'png')
+hFig = init_figure([]);
+
+contourf(x, y, std_mag);
+
+colormap(cmap_LinLHot)
+colorbar;
+
+title('standard deviation magnitude')
+xlabel('')
+ylabel('')
+ylabel(cbar, ['standard deviation ' units_speed])
+
+axis square
+colorbar;
+caxis([0 400])
+
+saveas(hFig, [dir_figures filesep 'standard-deviation_mag'], 'png')
 
 
 %% Mean Vorticity - NOT vorticity of the mean velocity
@@ -491,10 +491,10 @@ parfor n = 1:numel(fnames_fluct)
     
         
     % load the .mat file of fluctuating, filtered and transformed data 
-    fluct = load([dir_case filesep 'vectors' filesep 'fluctuating' filesep fnames_fluct{n}]);
-    uP  = fluct.uP;
-    vP  = fluct.vP;
-    wzP = fluct.wzP;
+    FLUCT = load([dir_case filesep 'vectors' filesep 'fluctuating' filesep fnames_fluct{n}]);
+    uP    = FLUCT.uP;
+    vP    = FLUCT.vP;
+    wzP   = FLUCT.wzP;
     
     %% fluctuating velocity magnitude 
     hFig = init_figure([]);
@@ -662,25 +662,25 @@ parfor n = 1:numel(fnames_fluct)
 
     
     %% fluctuating TKE
-%     hFig = init_figure([]);
-%     
-%     TKE = 0.5 * (uP.^2 + vP.^2);
-%            
-%     contourf(x, y, UmagP);
-% 
-%     colormap(cmap_LinLHot)
-%     colorbar;
-%     
-%     title('')
-%     xlabel('')
-%     ylabel('')
-%     ylabel(cbar, ['fluctuating velocity magnitude ' units_speed])
-%     
-%     axis square
-%     colorbar;
+    hFig = init_figure([]);
+    
+    TKE = 0.5 * (uP.^2 + vP.^2);
+           
+    contourf(x, y, TKE);
+
+    colormap(cmap_LinLHot)
+    colorbar;
+    
+    title('')
+    xlabel('')
+    ylabel('')
+    ylabel(cbar, ['turbulent kinetic energy ' units_speed])
+    
+    axis square
+    colorbar;
 %     caxis([0 500])
-%     % 
-%     saveas(hFig, [dir_figures filesep 'fluctuating_velocity_mag__' sprintf('%5.5d',n)], 'png')
+    % 
+    saveas(hFig, [dir_figures filesep 'TKE__' sprintf('%5.5d',n)], 'png')
     
     
   
@@ -692,10 +692,7 @@ parfor n = 1:numel(fnames_fluct)
     
 end
     
-    
-    
-    
-    
+   
     
 %% crop white space from all figure
 crop(dir_figures);

@@ -3,7 +3,7 @@ function piv_bfield_prepare(OPTIONS, dir_case)
 piv_bfield_systemcheck();       % check if system is fully compatible
 
 if OPTIONS.firstTime
-    piv_bfield_cleancase(OPTIONS.dir_case);
+    piv_bfield_cleancase(dir_case);
 end
     
 if OPTIONS.findZombies && OPTIONS.ImageJ

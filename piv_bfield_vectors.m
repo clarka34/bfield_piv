@@ -2,7 +2,7 @@ function piv_bfield_vectors(OPTIONS, dir_case)
 
 %% PROCESSING velocities and vorticity
 
-% case directory expected to contain these subfolders
+% case directory expected to contain these subfolders (should be setup automatically by "prepare")
 dir_images_post = [dir_case filesep 'post'];
 dir_vectors     = [dir_case filesep 'vectors'];
 
@@ -11,7 +11,7 @@ fnames = sort_nat({files.name}, 'ascend');          % sort the file list with na
 fnames = fnames(:);                                 % reshape into a nicer list
 
 if isempty(fnames)
-    error('[ERROR] The "post" directory contains no images');
+    error('[ERROR] The "post" directory contains no images ... ');
 end
 
 
@@ -48,7 +48,7 @@ else
 end
 
 % determine stencil size for vorticity calculation method
-switch OPTIONS.method_vort
+switch OPTIONS.method_vort  % it is the ghost size minus 1 for the 
     case 'circulation'
         offset = 2 - 1;
     case 'leastsq'  % or Richardson
@@ -57,7 +57,7 @@ switch OPTIONS.method_vort
         error('[ERROR] unrecognized options for method_vort');
 end 
     
-% compute the initial velocity (this might speed up MatPIV, but I have only seen like few percent speedup)
+% compute the initial velocity (this might speed up MatPIV, but have only seen like few percent speedup ... careful about parfor loop non-deterministic things)
 if OPTIONS.use_init_vel
     [~, ~, init_u, init_v, ~, ~] = matpiv([dir_images_post filesep im_b{1}], ...
                                           [dir_images_post filesep im_c{1}], ...
@@ -110,13 +110,13 @@ parfor n = 1:num_pairs
             m    = double( MASK.maske.msk );
             m    = m(9:8:end,9:8:end); % downsampling (THIS IS HARDCODED - should generalize this by detecting image size?)
 
-            % PUT ON THE MASK (SOMEBODY STOP ME) 
+            % PUT ON THE MASK (SOMEBODY STOP ME ... anybody remember that movie?) 
             u = m .* u;
             v = m .* v;
         end
 
         % Coordinate Transformation from pixels to meters
-        xT = OPTIONS.T_inv * x;
+        xT = OPTIONS.T_inv * x;         % trying to avoid "temporary vaiables" here
         yT = OPTIONS.T_inv * y;
         uT = OPTIONS.T_inv * u;
         vT = OPTIONS.T_inv * v;
@@ -126,7 +126,7 @@ parfor n = 1:num_pairs
         vT = vT*OPTIONS.mmpp/1000;      % (meters/second)
 
         % save the raw data, and has been transformed into real world coordinates
-        x = xT; % cumbersome to rename variable so many times ... something about parfor loop overwriting temporary variables
+        x = xT; % cumbersome to rename variable so many times ... warning: something about parfor loop overwriting temporary variables
         y = yT;
         u = uT;
         v = vT;
@@ -149,8 +149,7 @@ parfor n = 1:num_pairs
         
     elseif ~OPTIONS.runMatPIV && ~OPTIONS.applyFilters
         % not re-running MatPIV, and not applying a new filter (so only the post-processing stuff will be re-run)
-        % at this point, the "filtered data" are already saved to hard
-        % drive, should load them 
+        % the "filtered data" are already saved to hard drive, so load them now
         RAW = load([dir_vectors filesep 'raw' filesep 'raw__' sprintf('%5.5d', n)]);
         u   = RAW.u;
         v   = RAW.v;

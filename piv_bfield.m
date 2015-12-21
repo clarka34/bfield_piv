@@ -2,20 +2,22 @@
 % ==============
 % * provide an initial guess for the velocity field, based upon
 %   the computed valuse from previous iteration
-%   idea for bugfix related to missing velinterp function ... use v1.6
-%   and replace imrgb using imfinfo
-%   for example, you have a directory full of TIFFs (Thousands of Incompatible File Formats), and some are indexed, some are RGB, etc. In this case, I recommend that you determine the image type directly from the output of imfinfo. 
+%   idea for bugfix related to missing velinterp function ... use MatPIV v1.6 and replace imrgb using imfinfo
+%   for example, you have a directory full of TIFFs (Thousands of
+%   Incompatible File Formats), and some are indexed, some are RGB, etc. In this case, recommend to determine the image type directly from the output of imfinfo.
 % * remove the console output from MatPIV ... or at least minimize it
 % * add some console output for each stage (1-prepare, 2-vectors, 3-stats, 4-figures, 5-movies, ...)
 % * write the output .mat files in compatible form to OpenPIV Spatial Toolbox (because I think it has developed POD analysis)
 % * don't write post-processed filenames as "A__" and "B__"
 %   it will better to keep numerical order to view images
-% * figure out if ParaView or VisIt (or VAPOR?) can provide easier POD, LIC and FTLE analysis
-% * to make FFMPEG usable by Matlab, try something like: 
+% * figure out if ParaView or VisIt (or VAPOR?) can provide easier POD, LIC
+%   and FTLE analysis ... update: ParaView provides built-in LIC, but could not find anything in VisIt
+% * to make FFMPEG usable by Matlab, try something like (tested with R2011b): 
 %   sudo ln -s /usr/lib64/libraw1394.so.11.1.0 /usr/local/MATLAB/R2011b/sys/os/glnxa64/libraw1394.so.8
 %   sudo ln -sf /usr/lib64/libstdc++.so.6.0.19 /usr/local/MATLAB/R2011b/bin/glnxa64/libstdc++.so.6
-%   OR just open matlab like this from command prompt (THIS SEEMS LIKE THE BEST SOLUTION, it works for me now): 
+%   OR just open matlab like this from command prompt (THIS SEEMS LIKE THE BEST SOLUTION, it works for me now - on R2011b): 
 %   LD_PRELOAD=/usr/lib64/libstdc++.so.6.0.19 matlab
+% * easter egg if you find what the "bfield" stands for ... 
 
 function piv_bfield(OPTIONS,dir_case)
 
@@ -46,25 +48,25 @@ if OPTIONS.parallel_nCPUs > 1
     parpool('local',OPTIONS.parallel_nCPUs);
 end
 
-%% RUN the main loop (the entire toolchain of this toolbox)
+%% RUN the entire toolchain of this toolbox
 
 % start a clean logfile
 diary off
-for n = 1:numel(dir_case)
+% for n = 1:numel(dir_case)
       
     if OPTIONS.logfiles
         % start a new logfile for each directory of images
-        logfile = [dir_case{n} filesep 'log.dir_case'];
+        logfile = [dir_case filesep 'log.dir_case'];
         disp(logfile);
         diary(logfile);   
     end
     
     % user can specify to skip certain directories
-    if any(n == OPTIONS.skip_case)
-        disp('something wrong in these cases, skipping, see your lab journal for details ... ')
-        diary off
-        continue
-    end
+%     if any(n == OPTIONS.skip_case)
+%         disp('something wrong in these cases, skipping, see your lab journal for details ... ')
+%         diary off
+%         continue
+%     end
     
     % display sweet logo (see the awesome FIGLET program)
     disp('');
@@ -76,36 +78,34 @@ for n = 1:numel(dir_case)
     disp('|    ___||   | |       |        |  _   | |    ___||   | |    ___||   |___ | |_|   |');
     disp('|   |    |   |  |     |  _____  | |_|   ||   |    |   | |   |___ |       ||       |');
     disp('|___|    |___|   |___|  |_____| |_______||___|    |___| |_______||_______||______| ');
-    disp(['running dir_case: ' dir_case{n}]);
+    disp(['running dir_case: ' dir_case]);
     disp('-----------------------------------------------------------------------------------');
     disp('');
 
         
     %% 1) PRE-PROCESS the images (to clean them up) 
-    % performs 3 operations: clean directory, detect zombie images, ImageJ pre-processing
-    piv_bfield_prepare(OPTIONS, dir_case{n});
+    % performs 3 operations: clean/prepare directory, detect "zombie images", ImageJ pre-processing
+    piv_bfield_prepare(OPTIONS, dir_case);
       
     % CALIBRATION IMAGE
     % should image calibration be automated in this script??? probably, but for now just load a transformation matrix from a .mat file
     % image_cal       = [dir_case filesep 'Calibration_PIV_Wake_YawAngle20degree_083015_tailsideside_0D0.tif'];
-
     
     %% 2) PROCESS the vector fields: velocity,vorticity
     % this is where MatPIV is called to performs the correlations between images, and filtering
-    piv_bfield_vectors(OPTIONS, dir_case{n})
+    piv_bfield_vectors(OPTIONS, dir_case)
     
     %% 3) POST-PROCESS compute statistics
     % computes statistical quantities from image stack
-    piv_bfield_stats(OPTIONS, dir_case{n})
-    
-    
+    piv_bfield_stats(OPTIONS, dir_case)
+      
     %% 4) POST-POST PROCESS make figure and movies
     % this creates figures of the instantaneous scalar/vector fields
-    piv_bfield_figures(OPTIONS, dir_case{n})
+    piv_bfield_figures(OPTIONS, dir_case)
     
     if OPTIONS.FFMPEG
         % this creates a movie out of each scalar/vector field
-        piv_bfield_movies(OPTIONS, dir_case{n});
+        piv_bfield_movies(OPTIONS, dir_case);
     end
     
     
@@ -113,7 +113,7 @@ for n = 1:numel(dir_case)
     diary off
     
     
-end
+% end
 
 
 %% CLEANUP shutdown safely

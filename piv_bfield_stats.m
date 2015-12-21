@@ -98,7 +98,7 @@ vtkwrite([dir_vectors filesep 'vtk' filesep 'vtk_mean_vorticity.vtk'], ...
          'structured_grid',x,y,z, 'vectors','vorticity',mean_wx,mean_wy,mean_wz)
 
       
-%% FLUCTUATING COMPONENTS ... P stand for "prime" like u'
+%% FLUCTUATING COMPONENTS ... P stand for "prime" like u' in the Reynolds decomposition
 all_uP    = zeros(size(x,1), size(x,2), numel(fnames));
 all_vP    = zeros(size(x,1), size(x,2), numel(fnames));
 all_UmagP = zeros(size(x,1), size(x,2), numel(fnames));
@@ -142,9 +142,9 @@ end
 % TKE = 0.5 * (mean(uP.^2) + mean(vP.^2));
 
 % these are all calculated from instantaneous values U = u' + uMean ?
-ke_tot  =( rms_u.^2 +  rms_v.^2)/2;
-ke_turb =( std_u.^2 +  std_v.^2)/2;
-ke_mean =(mean_u.^2 + mean_v.^2)/2;
+ke_tot  = ( rms_u.^2 +  rms_v.^2)/2; % is this correct?
+ke_turb = ( std_u.^2 +  std_v.^2)/2;
+ke_mean = (mean_u.^2 + mean_v.^2)/2;
 
 % plot(sm_frame*smooth,ke_tot,'r-', sm_frame*smooth,ke_turb,'b-', sm_frame*smooth,ke_mean,'m-');
 % legend('E total','E turb','E mean');
@@ -157,7 +157,7 @@ ke_mean =(mean_u.^2 + mean_v.^2)/2;
 
 
 % Reynolds stress
-% T is a symmetric matrix: T(i,j) = T(j,i).
+% T is a symmetric matrix: T(i,j) = T(j,i). -- suggest to normailze by density
 %     The kinetic energy (per unit mass) is given by 2*trace(T).
 %     For isotropic flow, T is proportional to the identity matrix.
 % Rstress = -1 * mean(handles.uf .* handles.vf, 3); % Reynolds stress
