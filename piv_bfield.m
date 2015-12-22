@@ -100,7 +100,7 @@ diary off
     piv_bfield_stats(OPTIONS, dir_case)
       
     %% 4) POST-POST PROCESS make figure and movies
-    % this creates figures of the instantaneous scalar/vector fields
+    % this prints figures of the vector/scalar fields
     piv_bfield_figures(OPTIONS, dir_case)
     
     if OPTIONS.FFMPEG

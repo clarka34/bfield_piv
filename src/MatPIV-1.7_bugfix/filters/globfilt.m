@@ -76,8 +76,8 @@ elseif any(strcmp(varargin,'loop')) & ~any(strcmp(varargin,'manual'))
     param=cat(1,varargin{pa});
     %param=cell2mat(varargin(pa));
   else
-    param=3; 
     disp('Warning! no threshold specified. Using standard setting.')
+    param=3;
   end
   xo=mnanmean(u(:)); yo=mnanmean(v(:));
   while param~=0,
@@ -98,7 +98,9 @@ elseif any(strcmp(varargin,'loop')) & ~any(strcmp(varargin,'manual'))
           vekplot2(x(~in),y(~in),u(~in),v(~in),scale,'r');
           fprintf(['with limit: ',num2str(param),...
                   ' *std [U V]'])
-          param=input(['To change THRESHOLD type new value, \n type 0 to use current value >> ']);
+%           param=input(['To change THRESHOLD type new value, \n type 0 to use current value >> ']);
+        fprintf(['global THRESHOLD defaulting to std mag of 3 \n']);
+        param  = 3;
          
   end
   close

@@ -45,8 +45,8 @@ for n = 1:numel(fnames)
     % instantaneous variables
     all_u(:,:,n)    = INST.fu;
     all_v(:,:,n)    = INST.fv;
-    all_Umag(:,:,n) = sqrt(fu.^2 + fv.^2);
-    all_wz(:,:,n)   = fwz;
+    all_Umag(:,:,n) = sqrtINST.(fu.^2 + INST.fv.^2);
+    all_wz(:,:,n)   = INST.fwz;
                 
 end
 

@@ -18,9 +18,9 @@ dir_figures = [dir_case filesep 'figures'];
 
 % Define limits of colorbar scaling, this is flow dependent
 % clims_Umag = [1000 4000];   % in pixel world
-clims_Umag = [OPTIONS.inflow*1.7, OPTIONS.inflow*(1 + OPTIONS.inflow*1.3)];         % in meters world
+clims_Umag = [OPTIONS.inflow*(1 - OPTIONS.inflow*0.7) OPTIONS.inflow*(1 - OPTIONS.inflow*1.3)];         % in meters world
 % clims_u    = [-2000 2000]; 
-clims_u    = [clims_Umag(1) clims_Umag(2)]; 
+clims_u    = [\OPTIONS.inflow*0.7 0.7]; 
 
 
 % define some colormaps

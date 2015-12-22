@@ -28,7 +28,8 @@ success = mkdir(dir_figures);
 % copy the ParaView state files into same directory (for convenience)
 system(['cp *.pvsm ' dir_case filesep 'vectors' filesep 'vtk']);
 
-if ~status || ~success
+if ~status || ~success % I think this fails if the directory is already "clean"
+if ~success
     fprintf(1, '[ERROR: cannot remove directories, check your file permissions priveledges, or close any open files] \n');
 end
 

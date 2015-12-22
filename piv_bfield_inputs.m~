@@ -37,8 +37,8 @@ OPTIONS.thold_peak       = 0.5;             % peak to peak filtering
 OPTIONS.thold_local      = 3;               % threshold for std. use with local filtering 
 OPTIONS.thold_local_num  = 5;               % number of vectors to apply the local filtering upon
 OPTIONS.thold_local_stat = 'median';        % use type filtering in localfilt. suggest 'median'
-OPTIONS.thold_global     = 3;               % threshold for use with globalfiltering (choose 3 or 'loop' ... loop is causing extreme memory usage/errors)
-OPTIONS.Nglobal          = 2;               % iterations for use with globalfiltering
+OPTIONS.thold_Nglobal    = 3;               % threshold for use with globalfiltering (choose 3 or 'loop' ... loop is causing extremem memory usage/errors)
+OPTIONS.Nglobal          = 3;               % iterations for use with globalfiltering
 OPTIONS.int              = 'interp';        % interpolate outliers
 OPTIONS.method_vort      = 'leastsq';       % method for calculation vorticity. 'leastsq' is the preferred method in PIV to reduce effect of fluctuations. or try 'circulation'
 

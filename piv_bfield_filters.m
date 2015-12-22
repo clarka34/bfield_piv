@@ -10,6 +10,8 @@ function [fu, fv] = piv_bfield_filters(OPTIONS, x, y, fu, fv, snr, pkh)
 [fu, fv] = peakfilt(x, y, fu, fv, pkh, OPTIONS.thold_peak);
 
 % global filtering
+% [fu, fv] = globfilt(x, y, fu, fv, OPTIONS.thold_global);
+% [fu, fv] = globfilt(x, y, fu, fv, OPTIONS.thold_global, OPTIONS.Nglobal); % crash if more than 5 inputs?
 [fu, fv] = globfilt(x, y, fu, fv, OPTIONS.thold_global);
 
 % local filtering
