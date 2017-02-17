@@ -1,0 +1,7 @@
+
+# some of the example input files are too large to store with GitHub
+# these specific examples can be downloaded from the NNMREC website
+
+# ignore temporary Matlab files
+*.m~
+
