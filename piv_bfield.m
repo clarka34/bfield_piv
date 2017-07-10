@@ -85,7 +85,7 @@ diary off
         
     %% 1) PRE-PROCESS the images (to clean them up) 
     % performs 3 operations: clean/prepare directory, detect "zombie images", ImageJ pre-processing
-    piv_bfield_prepare(OPTIONS, dir_case);
+%     piv_bfield_prepare(OPTIONS, dir_case);
       
     % CALIBRATION IMAGE
     % should image calibration be automated in this script??? probably, but for now just load a transformation matrix from a .mat file
@@ -117,10 +117,11 @@ diary off
 
 
 %% CLEANUP shutdown safely
-isOpen = matlabpool('size');
-if isOpen > 0
-    matlabpool close;           % Close the distributed computing (this might vary between Matlab toolbox versions)        
-end
+delete(gcp('nocreate'));
+% isOpen = matlabpool('size');
+% if isOpen > 0
+%     matlabpool close;           % Close the distributed computing (this might vary between Matlab toolbox versions)        
+% end
 
 
 end % function

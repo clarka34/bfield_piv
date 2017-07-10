@@ -38,7 +38,7 @@ if isempty(OPTIONS.max_images)
     % keep all the images
 else
     if OPTIONS.max_images > num_pairs
-        % keep all the iamges
+        % keep all the images
     else
         % keep only the first 
         num_pairs   = OPTIONS.max_images;
@@ -74,7 +74,7 @@ end
 
 
 % parfor n = 1:num_pairs
-parfor n = 1:num_pairs      % for debugging ... testing for temporary variables  
+parfor (n = 1:num_pairs, OPTIONS.parallel_nCPUs)      % for debugging ... testing for temporary variables  
     if OPTIONS.runMatPIV
         % NOTE: use matpiv in pixel/second coordinates, and perform the world
         %       coordinate transfomation afterwards  

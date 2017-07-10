@@ -2,7 +2,7 @@ function hFig = init_figure(size)
 %% prepare the figures (set some defaults)
 % this method also helps to create/print figures running in headless mode
 
-% to cicumvent a 6-7 year old Matlab bug on GNU/Linux multi-monitors, dock the figure (or else!)
+% to circumvent a 6-7 year old Matlab bug on GNU/Linux multi-monitors, dock the figure (or else!)
 % set(0,'DefaultFigureWindowStyle','docked')  
 
 % we will randomly offset the left and bottom positions

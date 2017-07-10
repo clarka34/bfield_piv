@@ -5,3 +5,5 @@
 # ignore temporary Matlab files
 *.m~
 
+# remove mac folder attribute info
+.DS_Store

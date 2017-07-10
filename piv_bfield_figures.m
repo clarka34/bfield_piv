@@ -45,7 +45,7 @@ end
 
 
 
-% .mat files of raw, and filtered and transformed vectors
+% .mat files of s, and filtered and transformed vectors
 files        = dir([dir_case filesep 'vectors' filesep 'raw' filesep '*.mat']);
 fnames       = sort_nat({files.name}, 'ascend'); 	% sort the file list with natural ordering
 fnames_raw   = fnames(:);                        	% reshape into a nicer list
@@ -57,29 +57,29 @@ fnames       = sort_nat({files.name}, 'ascend'); 	% sort the file list with natu
 fnames_fluct = fnames(:);                        	% reshape into a nicer list
 
 %% plot instantaneous variables
-parfor n = 1:numel(fnames_inst)
+parfor (n = 1:numel(fnames_inst), OPTIONS.parallel_nCPUs)
 
     
     %% Load in the variables to plot
     % load the .mat file of raw vectors 
     RAW = load([dir_case filesep 'vectors' filesep 'raw' filesep fnames_raw{n}]);
-    pkh = RAW.pkh;
-    snr = RAW.snr;
+    pkh = RAW.raw_pkh;
+    snr = RAW.raw_snr;
     
     % load the .mat file of instantaneous, filtered and transformed data 
     POST = load([dir_case filesep 'vectors' filesep 'instantaneous' filesep fnames_inst{n}]);
     x    = POST.x;
     y    = POST.y;
     fu   = POST.fu;
-    fv   = -1 .* post.fv;    % because flow in images is going up-to-down
-    fwz  = post.fwz;
+    fv   = -1 .* POST.fv;    % because flow in images is going up-to-down
+    fwz  = POST.fwz;
     
     %% velocity magnitude 
     hFig = init_figure([]);
     
-    Umag = sqrt(post.fu.^2 + post.fv.^2);
+    Umag = sqrt(POST.fu.^2 + POST.fv.^2);
     
-    contourf(post.x, post.y, Umag);
+    contourf(POST.x, POST.y, Umag);
 
     colormap(cmap_LinLHot)
     
@@ -349,7 +349,7 @@ colorbar;
 title('standard deviation magnitude')
 xlabel('')
 ylabel('')
-ylabel(cbar, ['standard deviation ' units_speed])
+ylabel(colorbar, ['standard deviation ' units_speed])
 
 axis square
 colorbar;
@@ -487,7 +487,7 @@ saveas(hFig, [dir_figures filesep 'turbulence-intensity'], 'png')
  
     
 %% plot FLUCTUATING variables
-parfor n = 1:numel(fnames_fluct)
+parfor (n = 1:numel(fnames_fluct), OPTIONS.parallel_nCPUs)
     
         
     % load the .mat file of fluctuating, filtered and transformed data 
@@ -674,7 +674,7 @@ parfor n = 1:numel(fnames_fluct)
     title('')
     xlabel('')
     ylabel('')
-    ylabel(cbar, ['turbulent kinetic energy ' units_speed])
+    ylabel(colorbar, ['turbulent kinetic energy ' units_speed])
     
     axis square
     colorbar;
