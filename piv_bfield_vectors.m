@@ -4,6 +4,7 @@ function piv_bfield_vectors(OPTIONS, dir_case)
 
 % case directory expected to contain these subfolders (should be setup automatically by "prepare")
 dir_images_post = [dir_case filesep 'post'];
+dir_images_post = [dir_case filesep 'post2_every10'];
 dir_vectors     = [dir_case filesep 'vectors'];
 
 files  = dir([dir_images_post filesep '*.tif']);

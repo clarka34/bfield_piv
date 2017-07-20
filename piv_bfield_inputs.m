@@ -17,7 +17,7 @@ OPTIONS.inflow           = [];           	% "inflow speed" (m/s) [experimental, 
 %% MatPIV settings (for the "processing" step)
 OPTIONS.runMatPIV        = true;            % set to 'false' if you have already run MatPIV once, then it only re-runs the filtering & plotting stuff afterwards (useful for trying different post-processing options)
 OPTIONS.t_sep            = 1/1000;       	% time separation between base and cross images (the laser pulses)
-OPTIONS.overlap          = 0.75;          	% overlap of windows/interrogation regions
+OPTIONS.overlap          = 0.5;          	% overlap of windows/interrogation regions
 % OPTIONS.win_size         = [128 128; ...   	% 8 iterations of successively smaller window sizes
 %                             128 128; ...
 %                             64 64; ... 	
